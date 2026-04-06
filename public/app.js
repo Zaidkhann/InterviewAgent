@@ -95,7 +95,7 @@ async function startInterview() {
     };
 
     EL.btnStart.disabled = true;
-    setStatus("Initializing Swarm...");
+    setStatus("Initializing Agents...");
     showLoading("Technical Agent");
 
     try {
