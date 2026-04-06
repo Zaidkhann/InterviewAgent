@@ -18,10 +18,11 @@ app.use(express.json());
 // Main Router
 app.use('/api/interview', routes);
 
-// Global Health Check
-app.get('/', (req, res) => {
-  res.json({ status: 'OK', message: 'Interview Agent API is running securely! 🚀' });
-});
+// Serve Static UI Frontend
+app.use(express.static('public'));
+
+// Note: The root GET route '/' has been removed because app.use(express.static('public')) 
+// will automatically serve the public/index.html file at the root.
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI || process.env.MONGODB_URI || 'mongodb://localhost:27017/interview_agent')
