@@ -47,13 +47,16 @@ function appendSystemMessage(htmlText) {
     EL.chatFlow.scrollTop = EL.chatFlow.scrollHeight;
 }
 
-function showLoading() {
+function showLoading(agentName = 'System') {
     const wrapper = document.createElement('div');
     wrapper.id = 'loadingMsg';
     wrapper.className = 'message ai-msg';
     wrapper.innerHTML = `
-        <div class="msg-content typing-indicator">
-            <span></span><span></span><span></span>
+        <div class="msg-content">
+            <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 4px; font-style: italic;">${agentName} is typing...</div>
+            <div class="typing-indicator">
+                <span></span><span></span><span></span>
+            </div>
         </div>
     `;
     EL.chatFlow.appendChild(wrapper);
@@ -83,16 +86,17 @@ async function startInterview() {
     currentSessionId = generateId();
     EL.sessionIdDisplay.textContent = currentSessionId;
     
+    // Clear chat if starting a new session
+    EL.chatFlow.innerHTML = '';
+    
     const candidate = {
         name: EL.candidateName.value,
         role: EL.candidateRole.value
     };
 
     EL.btnStart.disabled = true;
-    EL.candidateName.disabled = true;
-    EL.candidateRole.disabled = true;
     setStatus("Initializing Swarm...");
-    showLoading();
+    showLoading("Technical Agent");
 
     try {
         const res = await fetch(`${API_BASE}/start`, {
@@ -111,7 +115,7 @@ async function startInterview() {
             EL.btnHR.disabled = false;
             EL.btnEnd.disabled = false;
             EL.btnRecommend.disabled = false;
-            EL.btnStart.style.display = "none";
+            EL.btnStart.textContent = "Restart Interview";
             setStatus("Waiting for candidate input...");
         } else {
             throw new Error(data.error || "Unknown Error");
@@ -133,7 +137,7 @@ async function sendAnswer() {
 
     appendMessage('user', text);
     setStatus("Insight Agent analyzing... Technical Agent typing...");
-    showLoading();
+    showLoading("Technical Agent");
 
     try {
         const res = await fetch(`${API_BASE}/answer`, {
@@ -165,7 +169,7 @@ async function triggerHR() {
     EL.btnHR.disabled = true;
     appendSystemMessage("<em>Switching Context... Handing off to HR Agent</em>");
     setStatus("HR Agent preparing...");
-    showLoading();
+    showLoading("HR Agent");
 
     try {
         const res = await fetch(`${API_BASE}/hr`, {
@@ -188,7 +192,7 @@ async function triggerHR() {
 async function triggerEnd() {
     if (!currentSessionId) return;
     setStatus("Evaluator & Critic Agents compiling final report...");
-    showLoading();
+    showLoading("Evaluator Agent");
 
     try {
         const res = await fetch(`${API_BASE}/end`, {
@@ -212,7 +216,7 @@ async function triggerEnd() {
 async function triggerRecommendations() {
     if (!currentSessionId) return;
     setStatus("Recommendation Agent fetching MCP Resources...");
-    showLoading();
+    showLoading("Recommendation Agent");
 
     try {
         const res = await fetch(`${API_BASE}/recommendations`, {
