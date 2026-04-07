@@ -53,7 +53,7 @@ function showLoading(agentName = 'System') {
     wrapper.className = 'message ai-msg';
     wrapper.innerHTML = `
         <div class="msg-content">
-            <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 4px; font-style: italic;">${agentName} is typing...</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 4px; font-style: italic;">${agentName} calling...</div>
             <div class="typing-indicator">
                 <span></span><span></span><span></span>
             </div>
@@ -136,7 +136,7 @@ async function sendAnswer() {
     EL.btnSend.disabled = true;
 
     appendMessage('user', text);
-    setStatus("Insight Agent analyzing... Technical Agent typing...");
+    setStatus("Insight Agent analyzing... Technical Agent calling...");
     showLoading("Technical Agent");
 
     try {

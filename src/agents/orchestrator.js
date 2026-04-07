@@ -37,7 +37,7 @@ function getDifficulty(session) {
 
   if (confidence === "low" || weak > 3) return "easy";
   if (confidence === "medium") return "medium";
-  return "hard";
+  return "medium"; // Caps maximum difficulty at "medium" instead of "hard"
 }
 
 function safeJSONParse(text) {
